@@ -1,2 +1,2 @@
 # singing-mouse-SPM
-Data and code associated with Singing Mouse sound production mechanism project
+Data and code associated with Singing mouse sound production mechanism project
