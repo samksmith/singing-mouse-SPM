@@ -1,0 +1,81 @@
+    # Project definitions (do not edit)
+Task: ST045
+scorer: SamKSmith
+date: Sep13
+multianimalproject: false
+identity:
+
+    # Project path (change when moving around)
+project_path: /Users/SSmith/Desktop/ST045-SamKSmith-2023-09-13
+
+    # Annotation data set configuration (and individual video cropping parameters)
+video_sets:
+  /Users/SSmith/Desktop/ST045-SamKSmith-2023-09-13/videos/ST045#001_rotated.avi:
+    crop: 0, 609, 0, 609
+  /Users/SSmith/Desktop/ST045-SamKSmith-2023-09-13/videos/ST045#005_rotated.avi:
+    crop: 0, 594, 0, 594
+  /Users/SSmith/Desktop/ST045-SamKSmith-2023-09-13/videos/ST045#008_rotated.avi:
+    crop: 0, 585, 0, 585
+bodyparts:
+- glottis_left_1
+- glottis_left_2
+- glottis_left_3
+- glottis_left_4
+- glottis_left_5
+- glottis_left_6
+- glottis_right_1
+- glottis_right_2
+- glottis_right_3
+- glottis_right_4
+- glottis_right_5
+- glottis_right_6
+- alar_edge_1
+- alar_edge_2
+- alar_edge_3
+- alar_edge_4
+- alar_edge_5
+- EG_1
+- EG_2
+- EG_3
+- EG_4
+- EG_5
+
+    # Fraction of video to start/stop when extracting frames for labeling/refinement
+start: 0
+stop: 1
+numframes2pick: 15
+
+    # Plotting configuration
+skeleton:
+- - bodypart1
+  - bodypart2
+- - objectA
+  - bodypart3
+skeleton_color: black
+pcutoff: 0.6
+dotsize: 12
+alphavalue: 0.7
+colormap: rainbow
+
+    # Training,Evaluation and Analysis configuration
+TrainingFraction:
+- 0.95
+iteration: 0
+default_net_type: resnet_50
+default_augmenter: default
+snapshotindex: -1
+batch_size: 8
+
+    # Cropping Parameters (for analysis and outlier frame detection)
+cropping: false
+    #if cropping is true for analysis, then set the values here:
+x1: 0
+x2: 640
+y1: 277
+y2: 624
+
+    # Refinement configuration (parameters from annotation dataset configuration also relevant in this stage)
+corner2move2:
+- 50
+- 50
+move2corner: true
