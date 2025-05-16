@@ -8,7 +8,7 @@ min_frequency = 15000;
 max_frequency = 90000;
 
 % Define folder master folder
-master_folder = "";
+master_folder = "/Users/SSmith/Library/CloudStorage/Box-Box/Phelps Lab Server/Projects/SKS/sks_scte_sound_prod_mech/larynx_manipulation/Data/S. teguina/Analysis exp2";
 
 % Define treatment folders
 treatment_folders = ["01_custom_step",...
@@ -17,7 +17,8 @@ treatment_folders = ["01_custom_step",...
    "04_alar_cut"];
 
 % Define list of trials
-trials{1} = [];
+trials{1} = ["ST310#005","STFem003#006","STFem003#008","STFem003#009",...
+    "STRed9#001","STRed7#002","STRed10#005"];
 trials{2} = [];
 trials{3} = [];
 trials{4} = [];
@@ -328,31 +329,31 @@ for treatment = 1%1:5
         p.maxf0 = f0range(2);			% Hz - maximum frequency
         p.hop = FrBinwidth;			% samples - interval between estimates
         p.sr=FsAi;				    % sampling rate
-        R=yin(SI1,p);
+        %R=yin(SI1,p);
 
-        Ind_good=find(R.ap0<APthreshold);
-        Ind_power=find(R.pwr>PWRthreshold);
-        Ind_allcrit=find(R.pwr>PWRthreshold & R.ap0<APthreshold);
+        %Ind_good=find(R.ap0<APthreshold);
+        %Ind_power=find(R.pwr>PWRthreshold);
+        %Ind_allcrit=find(R.pwr>PWRthreshold & R.ap0<APthreshold);
 
-        nframes=size(R.f0,2)
-        fsr=p.sr/p.hop;
-        t_yin=(1:nframes)/fsr;
+        %nframes=size(R.f0,2)
+        %fsr=p.sr/p.hop;
+        %t_yin=(1:nframes)/fsr;
 
-        figure; tl=tiledlayout(4,1);
+        %figure; tl=tiledlayout(4,1);
 
         % Plot YIN estimates
-        top = nexttile
-        plot(t_yin, R.f0, 'k.',     t_yin(Ind_allcrit), R.f0(Ind_allcrit), '.g');
-        ylabel('Sound f0 (Hz)')
-        mid = nexttile
-        plot(t_yin, R.ap0, 'k.',    t_yin(Ind_good), R.ap0(Ind_good), 'y.')
-        ylabel('Sound Aperiodicity')
-        bot = nexttile
-        plot(t_yin, R.pwr, 'k.',    t_yin(Ind_power), R.pwr(Ind_power), 'y.');
-        ylabel('Sound Power')
-        linkaxes([top mid bot], 'x');
-        xlabel("time(s)")
-        title(tl,trial)
+        %top = nexttile
+        %plot(t_yin, R.f0, 'k.',     t_yin(Ind_allcrit), R.f0(Ind_allcrit), '.g');
+        %ylabel('Sound f0 (Hz)')
+        %mid = nexttile
+        %plot(t_yin, R.ap0, 'k.',    t_yin(Ind_good), R.ap0(Ind_good), 'y.')
+        %ylabel('Sound Aperiodicity')
+        %bot = nexttile
+        %plot(t_yin, R.pwr, 'k.',    t_yin(Ind_power), R.pwr(Ind_power), 'y.');
+        %ylabel('Sound Power')
+        %linkaxes([top mid bot], 'x');
+        %xlabel("time(s)")
+        %title(tl,trial)
 
         % Plot sound and movement and flow and so on
         % process DLC output
@@ -636,7 +637,7 @@ for treatment = 1%1:5
         % calculate RMS of filtered sound
         filteredSound_rms = sqrt(movmean(filteredSound.^2 , rms_window_length));
         % calculate sound dB correcting for mic distance
-        filteredSound_db = 20 * log10(filteredSound_rms / 20e-6) + 20*log10(1/mic_distance);
+        filteredSound_db = 20 * log10(filteredSound_rms / 20e-6) + 20*log10(mic_distance/1);
         % add to an array 
         sp_array_db = [sp_array_db; filteredSound_db];
         sp_array_kPa = [sp_array_kPa; PI2];

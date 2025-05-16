@@ -1181,7 +1181,7 @@ for treatment = 1 %1:5
         % calculate RMS of filtered sound
         filteredSound_rms = sqrt(movmean(filteredSound.^2 , rms_window_length));
         % calculate sound dB correcting for mic distance
-        filteredSound_db = 20 * log10(filteredSound_rms / 20e-6) + 20*log10(1/mic_distance);
+        filteredSound_db = 20 * log10(filteredSound_rms / 20e-6) + 20*log10(mic_distance/1);
         % add to an array 
         sp_array_db = [sp_array_db; filteredSound_db];
         sp_array_kPa = [sp_array_kPa; PI2];
