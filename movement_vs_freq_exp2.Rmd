@@ -1,0 +1,66 @@
+---
+title: "movement_vs_freq_exp2"
+author: "Sam Smith"
+date: "2024-03-27"
+output: html_document
+---
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(stringr)
+
+# pull out all the appropriate file names from the directory
+table.list <- list.files(path="PATH",
+                   pattern="*_exp2.csv",
+                   full.names=FALSE)
+# get vector of IDs and vector of run #
+ids <- table.list %>% str_replace("_exp2.csv","") %>% strsplit("[#]")
+
+exp2 <- data.frame("time" = c(),
+                  "EGpt" = c(),
+                  "AEpt" = c(),
+                  "GA" = c(),
+                   "Thpt" = c(),
+                  "EGnorm" = c(),
+                  "AEnorm" = c(),
+                  "GAnorm" = c(),
+                   "Thnorm" = c(),
+                  "diffnorm" = c(),
+                  "freq" = c(),
+                  "flow" = c(),
+                  "pressure" = c())
+for(f in 1:length(table.list)){
+  temp <- read.csv(table.list[f],col.names=c("time","EGpt","AEpt","GA","Thpt","EGnorm","AEnorm","GAnorm","Thnorm","diffnorm","freq","flow","pressure"))
+  temp$id <- rep(ids[[f]][1],times=nrow(temp))
+  temp$run <- rep(ids[[f]][2],times=nrow(temp))
+  exp2 <- rbind(exp2,temp)
+}
+exp2$flowml <- exp2$flow * 1e6
+```
+
+thyroid movement vs glottal area
+```{r}
+library(pracma)
+thvgl1 <- lmer(data=exp2,GA ~ 1 + (1|id),REML=FALSE) # only subject as random effect
+thvgl2 <- lmer(data=exp2,GA ~ Thpt + (1|id),REML=FALSE) # only subject as random effect
+thvgl3 <- lmer(data=exp2,GA ~ Thpt + pressure + (1|id),REML=FALSE) # only subject as random effect
+thvgl4 <- lmer(data=exp2,GA ~ Thpt * pressure + (1|id),REML=FALSE) # only subject as random effect
+
+lrtest(thvgl1,thvgl2)
+lrtest(thvgl3,thvgl4)
+summary(thvgl2)
+r.squaredGLMM(thvgl3) # 0.46 R2 m
+
+# which models to calculate AIC
+models <- list(thvgl1,thvgl2,thvgl3,thvgl4)
+# model names
+model.names <- c("null","Th","Th_pr","Th*pr")
+# AIC for each model
+aictab(cand.set=models,modnames = model.names)
+
+sjPlot::tab_model(thvgl2)
+```
