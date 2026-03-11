@@ -8,7 +8,7 @@ min_frequency = 15000;
 max_frequency = 90000;
 
 % Define folder master folder
-master_folder = "/Users/SSmith/Library/CloudStorage/Box-Box/Phelps Lab Server/Projects/SKS/sks_scte_sound_prod_mech/larynx_manipulation/Data/S. teguina/Analysis exp2";
+master_folder = "PATH/TO/FILES/Analysis exp2";
 
 % Define treatment folders
 treatment_folders = ["01_custom_step",...
@@ -317,7 +317,7 @@ for treatment = 1%1:5
         CSV = CSV(contains(CSV,trial));
         CSV = fullfile(treatment_folder,CSV);
         load(trial_file)
-        trigger_data = data(:,end); % some data files have 4 columns and some 5, but trigger data seems to always be in the last one
+        trigger_data = data(:,end); % some data files have 4 columns and some 5, but trigger data is always be in the last one
         FsAi = 1/(Time(2)-Time(1));
 
         Wn     =   [highPass]/(FsAi/2);
@@ -632,7 +632,7 @@ for treatment = 1%1:5
         end
         % assign table of 1s and NaNs to new file
         sp_on_according_to_entropy = [sp_on_according_to_entropy; sp_on_according_to_entropy_TEMP];
-        sp_on_according_to_yin_TEMP = nan(size(filteredSound)); % Not using yet, maybe never. I am not sure which criteria we use to determine if USV is going on or not
+        sp_on_according_to_yin_TEMP = nan(size(filteredSound)); % Not using yet, maybe never.
 
         % calculate RMS of filtered sound
         filteredSound_rms = sqrt(movmean(filteredSound.^2 , rms_window_length));
