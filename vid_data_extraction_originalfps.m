@@ -12,7 +12,7 @@ minAE = min(vidAE);
 (maxAE-posAE)/(maxAE-minAE) % percent AE moved
 
 % creating dataframe for video data want to analyze
-outfileV = "/Volumes/Samsung_T5/dropbox_data/S. teguina/Analysis exp1/02_Adduction/ST302#004_videodata_orig.csv";
+outfileV = "/Path/To/Files/Experiment1/ST302#004_videodata_orig.csv";
 size_table = [size(video_time,2) 3];
 varTypes = ["double","double","double"];
 varNames = ["time","EG_point","AE_point"];
@@ -32,7 +32,7 @@ writetable(video_df,outfileV,'WriteRowNames',true);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % extracting video data with original sampling rate (250 fps) - Exp. 2
 % creating dataframe for video data want to analyze
-outfileV = "/Volumes/Samsung_T5/dropbox_data/S. teguina/Analysis exp2/01_custom_step/STRed9#001_videodata_orig.csv";
+outfileV = "/Path/To/Files/Experiment2/STRed9#001_videodata_orig.csv";
 size_table = [size(video_time,2) 5];
 varTypes = ["double","double","double","double","double"];
 varNames = ["time","EG_point","AE_point","glottal_area","Th_point"];
