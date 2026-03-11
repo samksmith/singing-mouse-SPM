@@ -1,7 +1,5 @@
 %% first mouse
-%video = "E:\Dropbox\Odense\Research\Scotinomys teguina USV 2019\Data\S. teguina\Analysis exp1\02_Adduction\ST045#005\190501_045_.avi";
-%video = "E:\Dropbox\Odense\Research\Scotinomys teguina USV 2019\Data\S. teguina\Analysis exp1\02_Adduction\ST045#006\190501_045_.avi";
-video = "E:\Dropbox\Odense\Research\Scotinomys teguina USV 2019\Data\S. teguina\Analysis exp1\02_Adduction\ST045#007\190501_045_.avi";
+video = "E:\Path\To\Video\File\video.avi";
 parts = regexp(video, '\', 'split');
 name = parts(end-1);
 [path, ~,~] = fileparts(video);
@@ -37,4 +35,5 @@ for j=1:1:endframe  % Start and END frame
 
 
 end
+
 close(WriteVidObj)
