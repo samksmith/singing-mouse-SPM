@@ -1,0 +1,138 @@
+---
+title: "movement_vs_freq"
+author: "Sam Smith"
+date: "2024-03-26"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(stringr)
+
+# pull out all the appropriate file names from the directory
+table.list <- list.files(path="PATH",
+                   pattern="*_MvF.csv",
+                   full.names=FALSE)
+table2.list <- list.files(path="PATH",
+                   pattern="*_MvF.csv",
+                   full.names=TRUE)
+# get vector of IDs and vector of run #
+ids <- table.list %>% str_replace("_MvF.csv","") %>% strsplit("[#]")
+ids2 <- table2.list %>% str_replace("PATH","") %>% str_replace("_MvF.csv","") %>% strsplit("[#]")
+
+# for experiment 1 
+MvF <- data.frame("time" = c(),
+                  "EGpt" = c(),
+                  "AEpt" = c(),
+                  "EGnorm" = c(),
+                  "AEnorm" = c(),
+                  "diffnorm" = c(),
+                  "freq" = c())
+for(f in 1:length(table.list)){
+  temp <- read.csv(table.list[f],col.names=c("time","EGpt","AEpt","EGnorm","AEnorm","diffnorm","freq"))
+  temp$id <- rep(ids[[f]][1],times=nrow(temp))
+  temp$run <- rep(ids[[f]][2],times=nrow(temp))
+  MvF <- rbind(MvF,temp)
+}
+
+# for experiment 2
+MvF2 <- data.frame("time" = c(),
+                   "EGpt" = c(),
+                   "AEpt" = c(),
+                   "GA" = c(),
+                   "Thpt" = c(),
+                   "EGnorm" = c(),
+                   "AEnorm" = c(),
+                   "GAnorm" = c(),
+                   "Thnorm" = c(),
+                   "diffnorm" = c(),
+                   "freq" = c())
+
+for(f in 1:length(table2.list)){
+  temp <- read.csv(table2.list[f],col.names=c("time","EGpt","AEpt","GA","Thpt",
+                                              "EGnorm","AEnorm","GAnnorm","Thnorm","diffnorm",
+                                              "freq"))
+  temp$id <- rep(ids2[[f]][1],times=nrow(temp))
+  temp$run <- rep(ids2[[f]][2],times=nrow(temp))
+  MvF2 <- rbind(MvF2,temp)
+}
+
+
+save(MvF,MvF2,file="movevsfreq_2.RData")
+
+
+MvF2_red <- MvF2[,-c(4,5,8,9)]
+MvF_all <- rbind(MvF,MvF2_red)
+MvF_all$diff <- MvF_all$EGpt - MvF_all$AEpt
+
+MvF_noF3 <- MvF_all[-c(which(MvF_all$id == "STFem003")),]
+```
+
+```{r}
+library(lme4)
+library(lmtest)
+library(MuMIn)
+library(sjPlot)
+library(effects)
+library(AICcmodavg)
+
+# mixed effects modelling
+mod1 <- lmer(data=MvF_all,freq ~ 1 + (1|id),REML=FALSE) # only subject as random effect
+mod2 <- lmer(data=MvF_all,freq ~ EGnorm + (1|id),REML=FALSE) # norm EG position as fixed effect
+mod3 <- lmer(data=MvF_all,freq ~ AEnorm + (1|id),REML=FALSE) # norm AE position as fixed effect
+mod4 <- lmer(data=MvF_all,freq ~ diffnorm + (1|id),REML=FALSE) # norm EG - AE position as fixed effect
+mod5 <- lmer(data=MvF_all,freq ~ EGnorm + AEnorm + (1|id),REML=FALSE)
+
+m1 <- lmer(data=MvF_all,freq ~ EGpt + (1|id),REML=FALSE)
+m2 <- lmer(data=MvF_all,freq ~ AEpt + (1|id),REML=FALSE)
+m3 <- lmer(data=MvF_all, freq ~ diff + (1|id),REML=FALSE)
+m4 <- lmer(data=MvF_all, freq ~ EGpt + AEpt + (1|id),REML=FALSE) # best model
+
+# test models against one another
+lrtest(mod5,m4)
+
+summary(m4)
+r.squaredGLMM(m4) # R2m = 0.41, R2c = 0.99
+
+# which models to calculate AIC
+models <- list(mod1,mod2,m1,mod3,m2,mod4,m3,mod5,m4)
+# model names
+model.names <- c("null","EGnorm","EG","AEnorm","AE","diffnorm","diff","EG_AE_norm","EG_AE")
+# AIC for each model
+aictab(cand.set=models,modnames = model.names)
+```
+
+```{r}
+m1 <- lmer(data=MvF_noF3,log10(freq/1000) ~ 1 + (1|id),REML=FALSE) # only subject as random effect
+m2 <- lmer(data=MvF_noF3,log10(freq/1000) ~ EGnorm + (1|id),REML=FALSE) # norm EG position as fixed effect
+m3 <- lmer(data=MvF_noF3,log10(freq/1000) ~ AEnorm + (1|id),REML=FALSE) # norm AE position as fixed effect
+m4 <- lmer(data=MvF_noF3,log10(freq/1000) ~ diffnorm + (1|id),REML=FALSE) # norm EG - AE position as fixed effect
+m5 <- lmer(data=MvF_noF3,log10(freq/1000) ~ EGnorm + AEnorm + (1|id),REML=FALSE)
+
+mn1 <- lmer(data=MvF_noF3,log10(freq/1000) ~ EGpt + (1|id),REML=FALSE) 
+mn2 <- lmer(data=MvF_noF3,log10(freq/1000) ~ AEpt + (1|id),REML=FALSE) 
+mn3 <- lmer(data=MvF_noF3,log10(freq/1000) ~ diff + (1|id),REML=FALSE) 
+mn4 <- lmer(data=MvF_noF3,log10(freq/1000) ~ EGpt + AEpt + (1|id),REML=FALSE)
+
+models <- list(m1,m2,mn1,m3,mn2,m4,mn3,m5,mn4)
+# model names
+model.names <- c("null","EGnorm","EG","AEnorm","AE","diffnorm","diff","EG_AE_norm","EG_AE")
+# AIC for each model
+aictab(cand.set=models,modnames = model.names) # diffnorm best model according to AIC val
+
+summary(m4)
+confint(m4)
+ranef(m4)
+r.squaredGLMM(m4) # R2m = 0.57, R2c = 0.80
+
+MvF_noF3 %>% 
+  ggplot(aes(x=diffnorm,y=freq/1000)) + geom_point(aes(color=id, shape=run),show.legend = FALSE) +
+  xlab("Normalized EG - AE") + ylab("Frequency (kHz)") + scale_color_brewer(palette = "Set2") +
+  xlim(0.1,1) + ylim(20,90) +
+  ggtitle("") + theme_classic() + theme(text = element_text(size=16))
+
+sjPlot::tab_model(m4)
+```
