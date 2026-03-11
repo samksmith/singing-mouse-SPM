@@ -8,5 +8,5 @@ batch_analysis_exp1.m and batch_analysis_exp2.m are the main analysis files for 
 Audio processing functions called in batch_analysis scripts = filter_signal, rms_Ajiboye.m, splineinterp_v2.m, tybutterNaN.m
 Video processing functions = rotate_video.m, rotate_image_coordinates.m, geXYfromDLC.m, getXYfromDLC_exp2.m, getXYfromDLC_rotcoord_sks.m
 
-
+Outputs of the batch analysis are then analyzed further in R. Movement_vs_freq.Rmd does linear mixed effects modelling to identify a relationship between pouch inflation (estimated by landmark movement) and sound frequency. Movement_vs_freq_exp2.Rmd does linear mixed effects modelling to identify a relationship between cricothyroid movement (imitated with thyroid rotation using a servo motor) and glottal narrowing. 
 
