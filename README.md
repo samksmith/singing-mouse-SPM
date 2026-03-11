@@ -10,3 +10,4 @@ Video processing functions = rotate_video.m, rotate_image_coordinates.m, geXYfro
 
 Outputs of the batch analysis are then analyzed further in R. Movement_vs_freq.Rmd does linear mixed effects modelling to identify a relationship between pouch inflation (estimated by landmark movement) and sound frequency. Movement_vs_freq_exp2.Rmd does linear mixed effects modelling to identify a relationship between cricothyroid movement (imitated with thyroid rotation using a servo motor) and glottal narrowing. Input files for these R files can be found in movement_vs_frequency/. Amplitude_analysis.Rmd calculates average SPL at 1 m for sounds produced by larynges when 4 kPa air pressure was supplied. SPL data table can be found on the Texas Data Repository.
 
+[![DOI](https://zenodo.org/badge/946883251.svg)](https://doi.org/10.5281/zenodo.18965391)
